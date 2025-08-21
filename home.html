@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <title>Database Tables</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+
+        .overlay {
+            background-color: rgba(19, 174, 50, 0.85);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            display: block;
+            background: #e0f7fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: #00796b;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.3s ease, transform 0.2s;
+        }
+
+        a:hover {
+            background: #b2ebf2;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">
+        <h1>WASTE MANAGEMENT SYSTEM</h1>
+        <ul>
+            {% for table in tables %}
+                <li><a href="{{ url_for('view_table', table_name=table) }}">{{ table }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

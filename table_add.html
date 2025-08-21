@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head><title>Add Row to {{ table_name }}</title></head>
+<body>
+<h1>Add Row to: {{ table_name }}</h1>
+<a href="{{ url_for('view_table', table_name=table_name) }}">Back</a>
+
+<form method="post">
+    {% for col in columns %}
+        <label>{{ col.column_name }}:</label><br>
+        <input type="text" name="{{ col.column_name }}"><br><br>
+    {% endfor %}
+    <button type="submit">Add</button>
+</form>
+</body>
+</html>

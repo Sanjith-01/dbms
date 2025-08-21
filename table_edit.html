@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head><title>Edit Row in {{ table_name }}</title></head>
+<body>
+<h1>Edit Row in: {{ table_name }}</h1>
+<a href="{{ url_for('view_table', table_name=table_name) }}">Back</a>
+
+<form method="post">
+    {% for col in columns %}
+        <label>{{ col.column_name }}{% if col.column_name == pk_col %} (PK){% endif %}:</label><br>
+        <input type="text" name="{{ col.column_name }}" value="{{ row[col.column_name] }}" {% if col.column_name == pk_col %}readonly{% endif %}><br><br>
+    {% endfor %}
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>
