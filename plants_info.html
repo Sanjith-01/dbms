@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Plants Information</title>
+    <style>
+.report-card {
+    max-width: 95%;
+    margin: 20px auto;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+.report-card h2 {
+    text-align: center;
+    color: #33691e;
+}
+.report-card table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.report-card th {
+    background: #558b2f;
+    color: white;
+    padding: 10px;
+}
+.report-card td {
+    border-bottom: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+</style>
+
+</head>
+<body>
+<div class="report-card">
+<h2>Treatment Plants and Their Managers</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Plant Name</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Capacity</th>
+            <th>Manager</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for plant in plants %}
+        <tr>
+            <td>{{ plant.PlantName }}</td>
+            <td>{{ plant.Location }}</td>
+            <td>{{ plant.Type }}</td>
+            <td>{{ plant.Capacity or 'N/A' }}</td>
+            <td>{{ plant.ManagerName or 'Unassigned' }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+</html>
