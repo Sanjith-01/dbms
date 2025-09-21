@@ -5,21 +5,19 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
-            background-size: cover;
+            background: #dcedc8;
             margin: 0;
             padding: 0;
         }
 
         .overlay {
-            background-color: rgba(19, 174, 50, 0.85);
             min-height: 100vh;
             padding: 40px 20px;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #33691e;
             margin-bottom: 30px;
         }
 
@@ -36,19 +34,17 @@
 
         a {
             display: block;
-            background: #e0f7fa;
+            background: #a5d6a7;
             padding: 15px 20px;
             border-radius: 10px;
-            color: #00796b;
+            color: #1b5e20;
             text-decoration: none;
             font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: background 0.3s ease, transform 0.2s;
+            transition: background 0.3s ease;
         }
 
         a:hover {
-            background: #b2ebf2;
-            transform: scale(1.02);
+            background: #81c784;
         }
     </style>
 </head>
@@ -59,6 +55,12 @@
             {% for table in tables %}
                 <li><a href="{{ url_for('view_table', table_name=table) }}">{{ table }}</a></li>
             {% endfor %}
+        </ul>
+        <h3>Reports & Combined Views</h3>
+        <ul>
+            <li><a href="{{ url_for('workers_with_roles') }}">Workers and Roles</a></li>
+            <li><a href="{{ url_for('plants_info') }}">Plants and Managers</a></li>
+            <li><a href="{{ url_for('batch_details') }}">Batch Full Details</a></li>
         </ul>
     </div>
 </body>
