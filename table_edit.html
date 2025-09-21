@@ -1,16 +1,93 @@
 <!doctype html>
 <html>
-<head><title>Edit Row in {{ table_name }}</title></head>
+<head>
+    <title>Edit Row - {{ table_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        .overlay {
+            background-color: rgba(19, 174, 50, 0.9);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #e0f7fa;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+            color: #00796b;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        input[readonly] {
+            background: #f5f5f5;
+            color: #666;
+        }
+        button {
+            margin-top: 20px;
+            background: #00796b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #004d40;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
-<h1>Edit Row in: {{ table_name }}</h1>
-<a href="{{ url_for('view_table', table_name=table_name) }}">Back</a>
-
-<form method="post">
-    {% for col in columns %}
-        <label>{{ col.column_name }}{% if col.column_name == pk_col %} (PK){% endif %}:</label><br>
-        <input type="text" name="{{ col.column_name }}" value="{{ row[col.column_name] }}" {% if col.column_name == pk_col %}readonly{% endif %}><br><br>
-    {% endfor %}
-    <button type="submit">Save</button>
-</form>
+    <div class="overlay">
+        <h2>Edit Row in {{ table_name }}</h2>
+        <form method="post">
+            {% for col in columns %}
+                <label>{{ col.column_name }}:</label>
+                {% if fk_options and col.column_name in fk_options %}
+                    <select name="{{ col.column_name }}" {% if col.column_name==pk_col %}readonly{% endif %}>
+                        {% for val in fk_options[col.column_name] %}
+                            <option value="{{ val }}" {% if row[col.column_name]==val %}selected{% endif %}>{{ val }}</option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <input name="{{ col.column_name }}" type="text" value="{{ row[col.column_name] }}" {% if col.column_name == pk_col %}readonly{% endif %}>
+                {% endif %}
+            {% endfor %}
+            <button type="submit">Update</button>
+        </form>
+        <a class="back-link" href="{{ url_for('view_table', table_name=table_name) }}">Back</a>
+    </div>
 </body>
 </html>
