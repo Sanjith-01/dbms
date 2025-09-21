@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Batch Full Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #dcedc8; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h2 { color: #33691e; text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #c5e1a5; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 10px; text-align: center; border-bottom: 1px solid #e0e0e0; }
+        th { background: #33691e; color: #fff; }
+        tr:hover { background: #dcedc8; }
+        .nowrap { white-space: nowrap; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Batch Full Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="nowrap">Batch ID</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Batch Type</th>
+                <th>Output Quantity</th>
+                <th>Chemical Used</th>
+                <th>Chemical Quantity</th>
+                <th>Chemical Date Applied</th>
+                <th>Worker</th>
+                <th>Hours Worked</th>
+                <th>Task Description</th>
+                <th>Product Type</th>
+                <th>Product Quantity</th>
+                <th>Quality Grade</th>
+                <th>Dispatch Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in batch_records %}
+            <tr>
+                <td>{{ record.BatchID }}</td>
+                <td>{{ record.StartDate }}</td>
+                <td>{{ record.EndDate or 'N/A' }}</td>
+                <td>{{ record.BatchType }}</td>
+                <td>{{ record.OutputQuantity or 'N/A' }}</td>
+                <td>{{ record.ChemicalName or 'N/A' }}</td>
+                <td>{{ record.QuantityUsed or 'N/A' }}</td>
+                <td>{{ record.DateApplied or 'N/A' }}</td>
+                <td>{{ record.WorkerName or 'N/A' }}</td>
+                <td>{{ record.HoursWorked or 'N/A' }}</td>
+                <td>{{ record.TaskDescription or 'N/A' }}</td>
+                <td>{{ record.ProductType or 'N/A' }}</td>
+                <td>{{ record.Quantity or 'N/A' }}</td>
+                <td>{{ record.GradeName or 'N/A' }}</td>
+                <td>{{ record.DispatchDate or 'N/A' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="15">No batch records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="text-align:center; margin-top:20px;">
+        <a href="{{ url_for('home') }}" style="text-decoration:none; color:#00796b; font-weight:bold;">Back to Home</a>
+    </p>
+</div>
+</body>
+</html>
