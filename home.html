@@ -1,67 +1,143 @@
 <!doctype html>
 <html>
 <head>
-    <title>Database Tables</title>
+    <meta charset="utf-8">
+    <title>WASTE MANAGEMENT SYSTEM</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #dcedc8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .overlay {
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #33691e;
-            margin-bottom: 30px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        li {
-            margin: 10px 0;
-        }
-
-        a {
-            display: block;
-            background: #a5d6a7;
-            padding: 15px 20px;
-            border-radius: 10px;
-            color: #1b5e20;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
-
-        a:hover {
-            background: #81c784;
-        }
+        body { font-family: Arial, sans-serif; background: #dcedc8; margin: 0; padding: 20px; }
+        h1 { text-align:center; color:#33691e; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; max-width:1100px; margin: 20px auto; }
+        .card { background:#fff; border-radius:8px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+        .card h3 { margin:0 0 10px 0; background:#a5d6a7; padding:8px; border-radius:6px; color:#1b5e20; }
+        ul { list-style:none; padding:0; margin:0; }
+        li { padding:8px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; }
+        .meta { font-size:13px; color:#666; }
+        .btn { background:#00796b; color:#fff; padding:6px 10px; border-radius:6px; text-decoration:none; }
+        .btn.disabled { background:#cfcfcf; pointer-events:none; color:#666; }
+        .warn { color:#c62828; font-weight:bold; font-size:13px; }
+        .add-link { margin-left:8px; font-size:13px; color:#1976d2; text-decoration:underline; }
     </style>
 </head>
 <body>
-    <div class="overlay">
-        <h1>WASTE MANAGEMENT SYSTEM</h1>
-        <ul>
-            {% for table in tables %}
-                <li><a href="{{ url_for('view_table', table_name=table) }}">{{ table }}</a></li>
-            {% endfor %}
-        </ul>
-        <h3>Reports & Combined Views</h3>
-        <ul>
-            <li><a href="{{ url_for('workers_with_roles') }}">Workers and Roles</a></li>
-            <li><a href="{{ url_for('plants_info') }}">Plants and Managers</a></li>
-            <li><a href="{{ url_for('batch_details') }}">Batch Full Details</a></li>
-        </ul>
+    <h1>WASTE MANAGEMENT SYSTEM</h1>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Reference Tables (Add these first)</h3>
+            <ul>
+                {% for t in reference_tables %}
+                <li>
+                    <div>
+                        <strong>{{ t.name }}</strong><div class="meta">{{ t.count }} rows</div>
+                    </div>
+                    <div>
+                        <a class="btn" href="{{ url_for('view_table', table_name=t.name) }}">View</a>
+                        {% if t.missing %}
+                            <!-- Reference table usually won't have missing refs; keep generic -->
+                            <a class="btn disabled">Add</a>
+                        {% else %}
+                            <a class="btn" href="{{ url_for('add_row', table_name=t.name) }}">Add</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Parent Tables</h3>
+            <ul>
+                {% for t in parent_tables %}
+                <li>
+                    <div>
+                        <strong>{{ t.name }}</strong><div class="meta">{{ t.count }} rows</div>
+                    </div>
+                    <div>
+                        <a class="btn" href="{{ url_for('view_table', table_name=t.name) }}">View</a>
+                        {% if t.missing %}
+                            <a class="btn disabled">Add</a>
+                        {% else %}
+                            <a class="btn" href="{{ url_for('add_row', table_name=t.name) }}">Add</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Child Tables (Depends on others)</h3>
+            <ul>
+                {% for t in child_tables %}
+                <li>
+                    <div>
+                        <strong>{{ t.name }}</strong><div class="meta">{{ t.count }} rows</div>
+                        {% if t.missing %}
+                            <div class="warn">Missing: {{ t.missing | join(', ') }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a class="btn" href="{{ url_for('view_table', table_name=t.name) }}">View</a>
+                        {% if t.missing %}
+                            <!-- Provide quick links to add missing referenced tables -->
+                            <a class="btn disabled">Add</a>
+                            {% for m in t.missing %}
+                                <a class="add-link" href="{{ url_for('add_row', table_name=m) }}">Add {{ m }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <a class="btn" href="{{ url_for('add_row', table_name=t.name) }}">Add</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if other_tables %}
+        <div class="card">
+            <h3>Other Tables</h3>
+            <ul>
+                {% for t in other_tables %}
+                <li>
+                    <div>
+                        <strong>{{ t.name }}</strong><div class="meta">{{ t.count }} rows</div>
+                    </div>
+                    <div>
+                        <a class="btn" href="{{ url_for('view_table', table_name=t.name) }}">View</a>
+                        {% if t.missing %}
+                            <a class="btn disabled">Add</a>
+                        {% else %}
+                            <a class="btn" href="{{ url_for('add_row', table_name=t.name) }}">Add</a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
     </div>
+
+    <div style="max-width:1100px; margin:20px auto; text-align:center;">
+        <h3>Reports & Combined Views</h3>
+        <a href="{{ url_for('workers_with_roles') }}" class="add-link">Workers & Roles</a> |
+        <a href="{{ url_for('plants_info') }}" class="add-link">Plants & Managers</a> |
+        <a href="{{ url_for('batch_details') }}" class="add-link">Batch Full Details</a>
+    </div>
+    <style>
+.add-link {
+    display: inline-block;
+    background-color: #00796b;
+    color: #fff;
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.add-link:hover {
+    background-color: #004d40;
+}
+</style>
 </body>
 </html>
