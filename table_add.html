@@ -1,90 +1,59 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Add Row - {{ table_name }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-        }
-        .overlay {
-            background-color: rgba(19, 174, 50, 0.9);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-        h2 {
-            text-align: center;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #e0f7fa;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        label {
-            display: block;
-            margin-top: 12px;
-            font-weight: bold;
-            color: #00796b;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        button {
-            margin-top: 20px;
-            background: #00796b;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-        }
-        button:hover {
-            background: #004d40;
-        }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
+        
+        body { font-family: Arial, sans-serif; background: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=80') center/cover fixed; margin:0; padding: 30px; }
+        .box { max-width:720px; margin:20px auto; background:rgba(255,255,255,0.95); padding:18px; border-radius:10px; }
+        h2 { text-align:center; color:#1b5e20; }
+        label { display:block; margin-top:12px; font-weight:bold; color:#00796b; }
+        input, select { width:100%; padding:8px; margin-top:6px; border-radius:6px; border:1px solid #ccc; }
+        button { margin-top:18px; background:#00796b; color:#fff; padding:10px 16px; border:none; border-radius:6px; cursor:pointer; width:100%; }
+        .warn { background:#fff3cd; padding:10px; border-radius:6px; color:#856404; margin-bottom:10px; }
+        .quick { display:inline-block; margin-left:10px; color:#1976d2; text-decoration:underline; }
     </style>
 </head>
 <body>
-    <div class="overlay">
+    <div class="box">
         <h2>Add New Row to {{ table_name }}</h2>
+
+        {% if missing_refs and missing_refs|length > 0 %}
+            <div class="warn">
+                Cannot add a row because these prerequisite tables have no data:
+                <strong>{{ missing_refs | join(', ') }}</strong>.
+                Please add data to them first:
+                {% for m in missing_refs %}
+                    <a class="quick" href="{{ url_for('add_row', table_name=m) }}">Add {{ m }}</a>{% if not loop.last %},{% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if not missing_refs %}
         <form method="post">
             {% for col in columns %}
-                <label>{{ col.column_name }}:</label>
+                <label>{{ col.column_name }}</label>
                 {% if fk_options and col.column_name in fk_options %}
-                    <select name="{{ col.column_name }}" required="{{ col.is_nullable=='NO' }}">
+                    <select name="{{ col.column_name }}" {% if col.is_nullable == 'NO' %}required{% endif %}>
                         <option value="">Select</option>
                         {% for val in fk_options[col.column_name] %}
                             <option value="{{ val }}">{{ val }}</option>
                         {% endfor %}
                     </select>
                 {% else %}
-                    <input name="{{ col.column_name }}" type="text" required="{{ col.is_nullable=='NO' }}">
+                    <input type="text" name="{{ col.column_name }}" {% if col.is_nullable == 'NO' %}required{% endif %}>
                 {% endif %}
             {% endfor %}
             <button type="submit">Add</button>
         </form>
-        <a class="back-link" href="{{ url_for('view_table', table_name=table_name) }}">Back</a>
+        {% else %}
+            <p style="text-align:center; margin-top:16px;">
+                After adding the required reference rows, refresh this page to add to <strong>{{ table_name }}</strong>.
+            </p>
+        {% endif %}
+
+        <p style="text-align:center; margin-top:12px;"><a href="{{ url_for('view_table', table_name=table_name) }}">Back</a></p>
     </div>
 </body>
 </html>
