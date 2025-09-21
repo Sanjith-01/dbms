@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Workers and Roles</title>
+    <style>
+.report-card {
+    max-width: 95%;
+    margin: 20px auto;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+.report-card h2 {
+    text-align: center;
+    color: #33691e;
+}
+.report-card table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.report-card th {
+    background: #558b2f;
+    color: white;
+    padding: 10px;
+}
+.report-card td {
+    border-bottom: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+</style>
+
+</head>
+<body>
+<div class="report-card">
+<h2>Workers and Their Roles</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Worker Name</th>
+            <th>Role</th>
+            <th>Contact</th>
+            <th>Hire Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for worker in workers %}
+        <tr>
+            <td>{{ worker.WorkerName }}</td>
+            <td>{{ worker.RoleName or 'N/A' }}</td>
+            <td>{{ worker.Contact }}</td>
+            <td>{{ worker.HireDate }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+</html>
