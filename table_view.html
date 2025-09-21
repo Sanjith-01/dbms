@@ -1,30 +1,53 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>{{ table_name }}</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #dcedc8; margin: 0; padding: 0; }
-        .overlay { min-height: 100vh; padding: 40px 20px; }
-        h2 { text-align: center; color: #33691e; margin-bottom: 20px; }
-        .nav-links { text-align: center; margin-bottom: 20px; }
-        .nav-links a { margin: 0 10px; text-decoration: none; color: #33691e; background: #c5e1a5; padding: 8px 15px; border-radius: 6px; }
-        .nav-links a:hover { background: #aed581; }
-        table { width: 90%; margin: 0 auto; border-collapse: collapse; background: #c5e1a5; border-radius: 10px; overflow: hidden; }
-        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ccc; }
-        th { background: #33691e; color: white; }
-        tr:hover { background: #aed581; }
-        button { background: #e53935; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #c62828; }
-        .action-links a { color: #33691e; font-weight: bold; margin-right: 8px; text-decoration: none; }
-        .action-links a:hover { text-decoration: underline; }
+/* Parent Tables */
+.parent-theme table { background: #fff3e0; }
+.parent-theme th { background: #e65100; }
+.parent-theme tr:hover { background: #ffe0b2; }
+
+/* Child Tables */
+.child-theme table { background: #e1f5fe; }
+.child-theme th { background: #0277bd; }
+.child-theme tr:hover { background: #b3e5fc; }
+
+/* Reference Tables */
+.reference-theme table { background: #f3e5f5; }
+.reference-theme th { background: #6a1b9a; }
+.reference-theme tr:hover { background: #e1bee7; }
+</style>
+
+    <style>
+        body { font-family: Arial, sans-serif; background:#dcedc8; padding:20px; }
+        .container { max-width:1100px; margin:0 auto; }
+        h2 { color:#33691e; }
+        .nav { margin-bottom:12px; }
+        .btn { background:#00796b; color:#fff; padding:6px 10px; text-decoration:none; border-radius:6px; }
+        .btn.disabled { background:#cfcfcf; pointer-events:none; color:#666; }
+        .warn { color:#c62828; font-weight:bold; margin-left:10px; }
+        table { width:100%; border-collapse:collapse; background:#c5e1a5; border-radius:8px; overflow:hidden; }
+        th, td { padding:10px; text-align:center; border-bottom:1px solid #e0e0e0; }
+        th { background:#33691e; color:#fff; }
     </style>
 </head>
 <body>
-    <div class="overlay">
+    <div class="container">
         <h2>Table: {{ table_name }}</h2>
-        <div class="nav-links">
-            <a href="{{ url_for('home') }}">Back</a>
-            <a href="{{ url_for('add_row', table_name=table_name) }}">Add New Row</a>
+        <div class="nav">
+            <a class="btn" href="{{ url_for('home') }}">Back</a>
+            {% if missing_refs %}
+                <a class="btn disabled">Add New Row</a>
+                <span class="warn">Cannot add: missing data in {{ missing_refs | join(', ') }}.
+                    {% for m in missing_refs %}
+                        <a href="{{ url_for('add_row', table_name=m) }}">Add {{ m }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            {% else %}
+                <a class="btn" href="{{ url_for('add_row', table_name=table_name) }}">Add New Row</a>
+            {% endif %}
         </div>
 
         <table>
@@ -38,23 +61,21 @@
             </thead>
             <tbody>
                 {% for row in rows %}
-                    <tr>
-                        {% for col in columns %}
-                            <td>{{ row[col.column_name] }}</td>
-                        {% endfor %}
-                        <td class="action-links">
-                            {% if pk_col %}
-                                <a href="{{ url_for('edit_row', table_name=table_name, pk_value=row[pk_col]) }}">Edit</a>
-                                <form action="{{ url_for('delete_row', table_name=table_name, pk_value=row[pk_col]) }}" method="post" style="display:inline;">
-                                    <button type="submit" onclick="return confirm('Delete this row?')">Delete</button>
-                                </form>
-                            {% endif %}
-                        </td>
-                    </tr>
+                <tr>
+                    {% for col in columns %}
+                        <td>{{ row[col.column_name] }}</td>
+                    {% endfor %}
+                    <td>
+                        {% if pk_col %}
+                            <a href="{{ url_for('edit_row', table_name=table_name, pk_value=row[pk_col]) }}">Edit</a>
+                            <form action="{{ url_for('delete_row', table_name=table_name, pk_value=row[pk_col]) }}" method="post" style="display:inline;">
+                                <button onclick="return confirm('Delete this row?')">Delete</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
                 {% else %}
-                    <tr>
-                        <td colspan="{{ columns|length + 1 }}">No data found.</td>
-                    </tr>
+                <tr><td colspan="{{ columns|length + 1 }}">No data found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
