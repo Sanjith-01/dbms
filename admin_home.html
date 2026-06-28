@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard - SMART WASTE SYSTEM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+    <style>
+        .dashboard-section {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .dashboard-section h2 {
+            color: #33691e;
+            border-bottom: 2px solid #c5e1a5;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #e6ffe6;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #558B2F;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #1b5e20;
+        }
+        .card .meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .card .btn, .card .warn {
+            display: block;
+            margin-top: 8px;
+        }
+        .card .btn.add {
+            background: #004d40;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout (Admin)</a>
+    </div>
+    <h1>SMART WASTE MANAGEMENT SYSTEM - Admin Dashboard</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="messages">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div class="dashboard-section">
+        <h2>Waste Flow Management (Input, Process, Output)</h2>
+        <div class="card-grid">
+            {% for t in flow_tables %}
+            <div class="card">
+                <h3>{{ t.name }}</h3>
+                <div class="meta">{{ t.count }} Rows</div>
+                <a href="{{ url_for('view_table', table_name=t.name) }}" class="btn">VIEW/MANAGE</a>
+                {% if t.missing %}
+                    <span class="warn">Missing Refs: {{ t.missing | join(', ') }}</span>
+                {% else %}
+                    <a href="{{ url_for('add_row', table_name=t.name) }}" class="btn add">ADD NEW</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dashboard-section">
+        <h2>Collection Trigger & Logistics (SensorData)</h2>
+        <div class="card-grid">
+            {% for t in trigger_tables %}
+            <div class="card">
+                <h3>{{ t.name }}</h3>
+                <div class="meta">{{ t.count }} Rows</div>
+                <a href="{{ url_for('view_table', table_name=t.name) }}" class="btn">VIEW/MANAGE</a>
+                {% if t.missing %}
+                    <span class="warn">Missing Refs: {{ t.missing | join(', ') }}</span>
+                {% else %}
+                    <a href="{{ url_for('add_row', table_name=t.name) }}" class="btn add">ADD NEW</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="dashboard-section">
+        <h2>System & User Setup</h2>
+        <div class="card-grid">
+            {% for t in system_tables %}
+            <div class="card">
+                <h3>{{ t.name }}</h3>
+                <div class="meta">{{ t.count }} Rows</div>
+                <a href="{{ url_for('view_table', table_name=t.name) }}" class="btn">VIEW/MANAGE</a>
+                {% if t.missing %}
+                    <span class="warn">Missing Refs: {{ t.missing | join(', ') }}</span>
+                {% else %}
+                    <a href="{{ url_for('add_row', table_name=t.name) }}" class="btn add">ADD NEW</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

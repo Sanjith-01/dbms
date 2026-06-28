@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Batch Full Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #dcedc8; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h2 { color: #33691e; text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #c5e1a5; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 10px; text-align: center; border-bottom: 1px solid #e0e0e0; }
+        th { background: #33691e; color: #fff; }
+        tr:hover { background: #dcedc8; }
+        .nowrap { white-space: nowrap; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Batch Flow and Output Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="nowrap">Batch ID</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Batch Type</th>
+                <th>Output Product</th>
+                <th>Output Quantity</th>
+                <th>Dispatch Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in batch_records %}
+            <tr>
+                <td>{{ record.BatchID }}</td>
+                <td>{{ record.StartDate | string | truncate(10, True, '') }}</td>
+                <td>{{ record.EndDate | default('N/A') | string | truncate(10, True, '') }}</td>
+                <td>{{ record.BatchType or 'N/A' }}</td>
+                <td>{{ record.ProductType or 'N/A' }}</td>
+                <td>{{ record.OutputQuantity or 'N/A' }}</td>
+                <td>{{ record.DispatchDate | default('N/A') | string | truncate(10, True, '') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No batch records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p style="text-align:center; margin-top:20px;">
+        {% if user_role == 'Admin' %}
+            <a href="{{ url_for('admin_home') }}" style="text-decoration:none; color:#00796b; font-weight:bold;">Back to Admin Dashboard</a>
+        {% elif user_role == 'Manager' %}
+            <a href="{{ url_for('manager_home') }}" style="text-decoration:none; color:#00796b; font-weight:bold;">Back to Manager Dashboard</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" style="text-decoration:none; color:#00796b; font-weight:bold;">Back to Login</a>
+        {% endif %}
+    </p>
+
+</div>
+</body>
+</html>

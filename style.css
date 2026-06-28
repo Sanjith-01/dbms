@@ -1,0 +1,206 @@
+/* ---------------------------------------------------- */
+/* --- GENERAL STYLES & RESETS --- */
+/* ---------------------------------------------------- */
+body { 
+    font-family: Arial, sans-serif; 
+    background: #dcedc8; /* Light Green Background */
+    margin: 0; 
+    padding: 0; 
+    color: #333; 
+}
+h1 { 
+    text-align:center; 
+    color:#33691e; /* Dark Green Title */
+    padding-top: 20px; 
+}
+.top-nav {
+    text-align:right; 
+    max-width:1200px; 
+    margin:0 auto; 
+    padding: 10px 20px; 
+}
+.logout-btn { 
+    background:#d32f2f; 
+    color:#fff; 
+    padding:8px 15px; 
+    text-decoration:none; 
+    border-radius:6px; 
+    font-weight:bold;
+    display: inline-block;
+}
+.btn { 
+    background:#00796b; 
+    color:#fff; 
+    padding:6px 10px; 
+    border-radius:6px; 
+    text-decoration:none; 
+    display: inline-block;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.btn:hover {
+    background: #004d40;
+}
+.warn { 
+    color:#c62828; 
+    font-weight:bold; 
+    font-size:13px; 
+}
+
+/* Flash Messages */
+.messages {
+    list-style: none; 
+    padding: 10px; 
+    background: #fff; 
+    max-width: 400px; /* Reduced message width */
+    margin: 10px auto; 
+    border-radius: 6px;
+    text-align: center;
+}
+.messages li {
+    font-weight: bold;
+    list-style: none;
+}
+.messages li.success {
+    color: green;
+}
+.messages li.danger {
+    color: red;
+}
+
+
+/* ---------------------------------------------------- */
+/* --- RADIAL HUB & SPOKE LAYOUT STYLES (HOME.HTML) --- */
+/* ---------------------------------------------------- */
+
+/* Container controls the size of the wheel/area (Reduced size) */
+.central-container {
+    position: relative;
+    width: 500px; /* NEW: Smaller container */
+    height: 500px;
+    margin: 50px auto;
+    overflow: visible; /* Changed to visible to ensure shadows show */
+}
+
+/* Base card styling (Smaller cards) */
+.action-card {
+    position: absolute;
+    width: 140px; /* NEW: Reduced card width */
+    padding: 10px; 
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Stronger shadow for depth */
+    background-color: #e6ffe6; 
+    text-align: center;
+    border: 2px solid #558B2F;
+    z-index: 10;
+}
+
+/* Center Hub (PLANT) - Positioned centrally */
+#plant-hub {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers the element perfectly */
+    width: 160px; /* Slightly larger hub */
+    height: 140px;
+    background-color: #a5d6a7; 
+    color: #1b5e20;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#plant-hub h3 {
+    font-size: 1.4em; /* Smaller font */
+    margin: 0;
+}
+#plant-hub .meta {
+    font-size: 0.7em; /* Smaller row count font */
+    margin-bottom: 10px; /* Tighter spacing */
+}
+#plant-hub .btn {
+    width: 85%;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    margin: 3px auto !important;
+}
+
+/* Positioning for the 4 Surrounding Cards (Proper Radiation) */
+/* Optimized offsets for 500px container */
+
+/* 1. Type Lookup (Reference - Top) */
+#card-typelookup {
+    top: 0%; /* Closer to the top edge */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 2. Process Batch (Child - Right) */
+#card-batch {
+    top: 35%; /* Moved down slightly */
+    right: 0;
+    transform: translateX(50%); 
+}
+
+/* 3. Output Product (Child - Bottom) */
+#card-output {
+    top: 70%; 
+    right: 15%; /* Keeps it off the corner */
+}
+
+/* 4. Material Input (Child - Left) */
+#card-input {
+    top: 70%;
+    left: 15%; /* Keeps it off the corner */
+}
+
+/* General Link Styling for Surrounding Cards */
+.action-card h4 {
+    font-size: 0.95em; /* Small header */
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.action-card .actions-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+}
+.action-card .actions-list li {
+    padding: 0;
+    border: none;
+    display: block;
+    text-align: center;
+}
+.action-card .actions-list a {
+    font-size: 0.75em; /* Very small font for links */
+    padding: 2px;
+    background: none;
+    color: #1976d2; 
+    display: block;
+    width: 100%;
+    text-decoration: underline;
+}
+
+.reports-bar {
+    text-align: center;
+    max-width: 600px;
+    margin: 50px auto 20px auto;
+    padding: 20px;
+    border-top: 2px solid #558B2F;
+}
+.reports-bar h3 {
+    color: #33691e;
+}
+.add-link {
+    display: inline-block;
+    background-color: #00796b;
+    color: #fff;
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+.add-link:hover {
+    background-color: #004d40;
+}

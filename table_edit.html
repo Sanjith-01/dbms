@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Edit Row - {{ table_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1600&q=80') center/cover fixed; margin:0; padding: 30px; }
+        .box { max-width:720px; margin:20px auto; background:rgba(255,255,255,0.95); padding:18px; border-radius:10px; }
+        h2 { text-align:center; color:#1b5e20; }
+        label { display:block; margin-top:12px; font-weight:bold; color:#00796b; }
+        input, select { width:100%; padding:8px; margin-top:6px; border-radius:6px; border:1px solid #ccc; }
+        button { margin-top:18px; background:#00796b; color:#fff; padding:10px 16px; border:none; border-radius:6px; cursor:pointer; width:100%; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Edit Row in {{ table_name }}</h2>
+        <form method="post">
+           {% for col in columns %}
+    <label>{{ col.column_name }}</label>
+
+    {% set current_value = row[col.column_name] | string %}
+
+    {% if col.column_name == pk_col %}
+        <input type="text" name="{{ col.column_name }}" value="{{ current_value }}" readonly>
+    {% elif col.column_name == 'TaskStatus' %}
+        <select name="{{ col.column_name }}">
+             <option value="Pending" {% if current_value == 'Pending' %}selected{% endif %}>Pending</option>
+             <option value="In Progress" {% if current_value == 'In Progress' %}selected{% endif %}>In Progress</option>
+             <option value="Completed" {% if current_value == 'Completed' %}selected{% endif %}>Completed</option>
+             <option value="Canceled" {% if current_value == 'Canceled' %}selected{% endif %}>Canceled</option>
+        </select>
+    {% elif fk_options and col.column_name in fk_options %}
+        <select name="{{ col.column_name }}">
+            <option value="">Select</option>
+            {% for fk_id, fk_name in fk_options[col.column_name] %}
+                <option value="{{ fk_id }}" {% if current_value == fk_id %}selected{% endif %}>
+                    {{ fk_name }} (ID: {{ fk_id }})
+                </option>
+            {% endfor %}
+        </select>
+    {% else %}
+        <input type="text" name="{{ col.column_name }}" value="{{ current_value }}">
+    {% endif %}
+
+{% endfor %}
+            <button type="submit">Update</button>
+        </form>
+        <p style="text-align:center; margin-top:12px;">
+            {% if user_role == 'Driver' %}
+                <a href="{{ url_for('driver_home') }}">Back to Tasks</a>
+            {% else %}
+                <a href="{{ url_for('view_table', table_name=table_name) }}">Back to Table View</a>
+            {% endif %}
+        </p>
+    </div>
+</body>
+</html>

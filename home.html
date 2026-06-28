@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SMART RESOURCE MANAGEMENT SYSTEM</title>
+    <!-- FIX: Link to static CSS file correctly -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+</head>
+<body>
+    <div class="top-nav">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+    <h1>SMART RESOURCE MANAGEMENT SYSTEM</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="messages">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- ---------------------------------------------------- -->
+    <!-- --- CENTRAL HUB LAYOUT (Radial/Surrounding Design) --- -->
+    <!-- ---------------------------------------------------- -->
+    <div class="central-container">
+        
+        <!-- Center Hub (The Main Table: PLANT) -->
+        {% set plant_table = parent_tables[0] if parent_tables else {'name': 'Plant', 'count': 'N/A', 'missing': []} %}
+        <div id="plant-hub" class="action-card">
+            <h3>PLANT</h3>
+            <div class="meta">{{ plant_table.count }} Rows</div>
+            <a href="{{ url_for('view_table', table_name=plant_table.name) }}" class="btn">VIEW/MANAGE</a>
+            {% if not plant_table.missing %}
+                <a href="{{ url_for('add_row', table_name=plant_table.name) }}" class="btn" style="margin-top: 10px;">ADD NEW</a>
+            {% endif %}
+        </div>
+
+        <!-- Surrounding Tables (Reference and Flow) -->
+        
+        <!-- 1. Type Lookup (Reference - Top) -->
+        {% set ref_table = reference_tables[0] if reference_tables else {'name': 'TypeLookup', 'count': 'N/A', 'missing': []} %}
+        {% if ref_table %}
+        <div class="action-card" id="card-typelookup">
+            <h4>1. Type Lookups</h4>
+            <div class="meta">{{ ref_table.count }} Rows</div>
+            <ul class="actions-list">
+                <li><a href="{{ url_for('view_table', table_name=ref_table.name) }}">View/Manage Types</a></li>
+                <li><a href="{{ url_for('add_row', table_name=ref_table.name) }}">Add New Type</a></li>
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- 2. Process Batch (Child - Right) -->
+        {% set batch_table = child_tables[0] if child_tables and child_tables[0].name == 'Batch' else {'name': 'Batch', 'count': 'N/A', 'missing': []} %}
+        {% if batch_table %}
+        <div class="action-card" id="card-batch">
+            <h4>2. Process Batch</h4>
+            <div class="meta">{{ batch_table.count }} Rows</div>
+            {% if batch_table.missing %}
+                 <div class="warn" style="font-size:0.8em; margin:5px 0;">Missing: {{ batch_table.missing | join(', ') }}</div>
+            {% endif %}
+            <ul class="actions-list">
+                <li><a href="{{ url_for('view_table', table_name=batch_table.name) }}">View Batches</a></li>
+                {% if not batch_table.missing %}
+                    <li><a href="{{ url_for('add_row', table_name=batch_table.name) }}">Start New Batch</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- 3. Output Product (Child - Bottom) -->
+        {% set output_table = child_tables[2] if child_tables and child_tables[2].name == 'Output' else {'name': 'Output', 'count': 'N/A', 'missing': []} %}
+        {% if output_table %}
+        <div class="action-card" id="card-output">
+            <h4>3. Output Inventory</h4>
+            <div class="meta">{{ output_table.count }} Rows</div>
+            {% if output_table.missing %}
+                 <div class="warn" style="font-size:0.8em; margin:5px 0;">Missing: {{ output_table.missing | join(', ') }}</div>
+            {% endif %}
+            <ul class="actions-list">
+                <li><a href="{{ url_for('view_table', table_name=output_table.name) }}">View Products</a></li>
+                {% if not output_table.missing %}
+                    <li><a href="{{ url_for('add_row', table_name=output_table.name) }}">Record Output</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- 4. Material Input (Child - Left) -->
+        {% set input_table = child_tables[1] if child_tables and child_tables[1].name == 'Input' else {'name': 'Input', 'count': 'N/A', 'missing': []} %}
+        {% if input_table %}
+        <div class="action-card" id="card-input">
+            <h4>4. Material Input</h4>
+            <div class="meta">{{ input_table.count }} Rows</div>
+             {% if input_table.missing %}
+                 <div class="warn" style="font-size:0.8em; margin:5px 0;">Missing: {{ input_table.missing | join(', ') }}</div>
+            {% endif %}
+            <ul class="actions-list">
+                <li><a href="{{ url_for('view_table', table_name=input_table.name) }}">View Inputs</a></li>
+                 {% if not input_table.missing %}
+                    <li><a href="{{ url_for('add_row', table_name=input_table.name) }}">Log New Input</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+
+    </div>
+    <!-- ---------------------------------------------------- -->
+
+
+    <div class="reports-bar">
+        <h3>Reports & Combined Views</h3>
+        <!-- FIX: Removed obsolete 'Plants & Capacity' link -->
+        <a href="{{ url_for('batch_details') }}" class="add-link">Batch Flow Details</a>
+    </div>
+    
+</body>
+</html>

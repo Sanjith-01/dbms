@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Manager Dashboard - SMART WASTE SYSTEM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+    <style>
+        .dashboard-section {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .dashboard-section h2 {
+            text-align: center;
+            color: #00796b;
+            border-bottom: 2px solid #b2dfdb;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: #e0f2f1;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #004d40;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #004d40;
+        }
+        .card .meta {
+            font-size: 0.9em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .card .btn, .card .warn {
+            display: block;
+            margin-top: 10px;
+        }
+        .card .btn.add {
+            background: #00796b;
+            padding: 10px 15px;
+            font-size: 1.1em;
+        }
+        /* New Style for Reports Bar */
+        .reports-bar {
+            text-align: center;
+            max-width: 600px;
+            margin: 50px auto 20px auto;
+            padding: 20px;
+            border-top: 2px solid #558B2F;
+        }
+        .reports-bar h3 {
+            color: #33691e;
+        }
+        .add-link {
+            display: inline-block;
+            background-color: #00796b;
+            color: #fff;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .add-link:hover {
+            background-color: #004d40;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout (Manager)</a>
+    </div>
+    <h1>Processing Manager Dashboard</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="messages">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div class="dashboard-section">
+        <h2>Material Flow Entry Points (Input, Process, Output)</h2>
+        <div class="card-grid">
+            {% for t in flow_tables %}
+            <div class="card">
+                <h3>{{ t.name }}</h3>
+                <div class="meta">{{ t.count }} Rows</div>
+                <a href="{{ url_for('view_table', table_name=t.name) }}" class="btn">VIEW DATA</a>
+                {% if t.missing %}
+                    <span class="warn">Cannot Add: Missing Refs in {{ t.missing | join(', ') }}</span>
+                {% else %}
+                    <a href="{{ url_for('add_row', table_name=t.name) }}" class="btn add">LOG NEW {{ t.name.upper() }}</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="reports-bar">
+        <h3>Reports & Combined Views</h3>
+        <a href="{{ url_for('batch_details') }}" class="add-link">Batch Flow Details</a>
+    </div>
+
+</body>
+</html>

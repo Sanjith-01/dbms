@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Tasks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+    <style>
+.report-card {
+    max-width: 95%;
+    margin: 20px auto;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 20px;
+}
+.report-card h2 {
+    text-align: center;
+    color: #33691e;
+}
+.report-card table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.report-card th {
+    background: #558b2f;
+    color: white;
+    padding: 10px;
+}
+.report-card td {
+    border-bottom: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+.status-pending { background-color: #ffcdd2; font-weight: bold; }
+.status-in-progress { background-color: #fff9c4; }
+.status-completed { background-color: #c8e6c9; color: #1b5e20; }
+</style>
+
+</head>
+<body>
+<div class="top-nav">
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout (Driver)</a>
+</div>
+<div class="report-card">
+<h2>Collection Tasks (SensorData)</h2>
+<p style="text-align:center;">Assigned tasks are sorted by status (Pending first).</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="messages">
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Task ID</th>
+            <th>Bin Area</th>
+            <th>Report Time</th>
+            <th>Waste Type</th>
+            <th>Fullness (%)</th>
+            <th>Assigned Driver</th>
+            <th>Vehicle No</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr class="status-{{ task.TaskStatus | lower | replace(' ', '-') }}">
+            <td>{{ task.SensorDataID }}</td>
+            <td>{{ task.AreaName }}</td>
+            <td>{{ task.ReportTime | string | truncate(16, True, '') }}</td>
+            <td>{{ task.WasteType }}</td>
+            <td>{{ task.FullnessPercentage }}</td>
+            <td>{{ task.DriverName or 'Unassigned' }}</td>
+            <td>{{ task.VehicleNo or 'N/A' }}</td>
+            <td>{{ task.TaskStatus }}</td>
+            <td>
+                {% if user_role == 'Admin' or task.TaskStatus != 'Completed' %}
+                    <a href="{{ url_for('edit_row', table_name='SensorData', pk_value=task.SensorDataID) }}">Edit Status</a>
+                {% else %}
+                    No Action
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+</html>
